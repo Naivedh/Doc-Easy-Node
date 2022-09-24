@@ -6,7 +6,7 @@ const speciality = new Schema({
 })
 const docter = new Schema(
   {
-    docterId: String,
+    // docterId: String,
     email: String,
     password: String,
     addresslong: Number,

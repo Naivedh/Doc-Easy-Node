@@ -22,15 +22,12 @@ let transporter = nodemailer.createTransport({
   }
 });
 
-
-
 const payload = {
   iss: process.env.ZOOM_API, //your API KEY
   exp: new Date().getTime() + 5000,
 };
 
 const token = jwt.sign(payload, process.env.ZOOM_API_SECRET);
-
 
 //req meeting is time limit
 meetingRouter.post("/requestMeeting",async(req,res)=>{
@@ -46,6 +43,7 @@ meetingRouter.post("/requestMeeting",async(req,res)=>{
         to: docter.email,
         subject: 'Doc-Easy',
         text: "Please login to the Doc-Easy App",
+        html: "<button style='color:blue; padding: 2px'>Go to APP<button>",
         auth:{
           user:"doceasy20@gmail.com",
           refreshToken:process.env.MAILER_REFRESH_TOKEN,
@@ -97,7 +95,7 @@ meetingRouter.post("/meeting", async (req, res) => {
   link += zoomResponse.start_url;
 
   try {
-    const { isDocter, _id: userId } = verfiyTokenAndExtractInfo(req.cookies["byf-session-config"], "*");
+    const { isDocter, _id: userId } = verfiyTokenAndExtractInfo(req.headers["easydoc-session-config"], "*");
     checkUser(isDocter, false);
     const { docterId } = req.body;
 

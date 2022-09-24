@@ -3,14 +3,14 @@ const { Schema } = mongoose;
 
 const user = new Schema(
   {
-    userId: String,
+    // userId: String,
     email: String,
     password: String,
     language: String,
     addresslong: Number,
     addresslat: Number,
-    startTime: Date,
-    EndTime: Date,
+    startTime: String,
+    EndTime: String,
     diagnosislist: [
       {
         date: Date,

@@ -1,6 +1,4 @@
 const express = require("express");
-
-
 const docterRouter = express.Router();
 
 const { generateHash, compareHash } = require("../utils/hash");
@@ -8,7 +6,7 @@ const { generateHash, compareHash } = require("../utils/hash");
 const { verfiyTokenAndExtractInfo, generateToken } = require("../utils/token");
 const { checkUser } = require("../utils/checkUser");
 const userModel = require("../models/userModel");
-const docterModal = require("../models/docterModel");
+const docterModel = require("../models/docterModel");
 
 //all Tutors
 docterRouter.get("/docter", async (req, res) => {
@@ -23,7 +21,7 @@ docterRouter.get("/docter", async (req, res) => {
 //one Tutor
 docterRouter.get("/docter/:_id", async (req, res) => {
   try {
-    const token = req.cookies["byf-session-config"];
+    const token = req.headers["easydoc-session-config"];
     verfiyTokenAndExtractInfo(token)
     const data = await docterModel.find({ _id: req.params._id });
     res.json(data);

@@ -11,7 +11,7 @@ const { generateToken, verfiyTokenAndExtractInfo } = require("../utils/token");
 
 loginRouter.get('/logout', async (req, res) => {
   try {
-    res.clearCookie('byf-session-config');
+    res.removeHeader('easydoc-session-config');
     res.end();
   } catch (error) {
     console.log(error);
@@ -21,8 +21,8 @@ loginRouter.get('/logout', async (req, res) => {
 
 loginRouter.post('/check', async (req, res) => {
   try {
-    const cookieData = verfiyTokenAndExtractInfo(req.cookies["byf-session-config"], "*")
-    res.json(cookieData);
+    const sessionData = verfiyTokenAndExtractInfo(req.headers["easydoc-session-config"], "*")
+    res.json(sessionData);
   } catch (error) {
         console.log(error)
         res.status(500).json({ message: error.message });
@@ -47,8 +47,8 @@ loginRouter.post('/login', async (req, res) => {
           const result = await compareHash(req.body.password, data[0].password);
           if (result) {
             const { _id, email } = data[0];
-            const cookieData = { _id, email, isDocter };
-            res.cookie("byf-session-config", generateToken(cookieData), {
+            const sessionData = { _id, email, isDocter };
+            res.header("easydoc-session-config", generateToken(sessionData), {
               expiresIn: new Date(Date.now() + 18000000),
               maxAge: 18000000,
               httpOnly: true  
