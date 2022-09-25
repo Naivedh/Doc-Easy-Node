@@ -8,15 +8,7 @@ const user = new Schema(
     password: String,
     language: String,
     addresslong: Number,
-    addresslat: Number,
-    startTime: String,
-    EndTime: String,
-    diagnosislist: [
-      {
-        date: Date,
-        description: String,
-      },
-    ],
+    addresslat: Number
   },
   { timestamps: true }
 );

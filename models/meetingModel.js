@@ -7,10 +7,12 @@ const meeting = new Schema(
     docterId: String,
     userEmail: String,
     docterEmail: String,
-    userName: String,
-    docterName: String,
     status: Boolean,
     link: String,
+    startTime: String,
+    endTime: String,
+    symptoms:String,
+    description: String
   },
   { timestamps: true }
 );

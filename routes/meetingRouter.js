@@ -33,7 +33,18 @@ const token = jwt.sign(payload, process.env.ZOOM_API_SECRET);
 meetingRouter.post("/requestMeeting",async(req,res)=>{
   doctors=[]
 
-  //find docters
+  const { isDocter, _id: userId } = verfiyTokenAndExtractInfo(req.headers["easydoc-session-config"], "*");
+  checkUser(isDocter, false);
+  //fecth docter based on proximity
+  const user = await userModel.find({ _id: userId });
+
+ const id1 = await docterModel.find({"_id":"632f59c75c189664fe1e4fcc"});
+ const id2 = await docterModel.find({"_id":"632f97e2a8362f296f1c9f50"});
+ const id3 = await docterModel.find({"_id":"632f982fa8362f296f1c9f51"});
+
+ docters.append(id1);
+ docters.append(id2);
+ docters.append(id3);
 
 
   docters.forEach((docter)=>{
@@ -51,16 +62,34 @@ meetingRouter.post("/requestMeeting",async(req,res)=>{
         }
       } 
       , 
-        function(err, data) {
+        async function(err, data) {
           if (err) {
             console.log("Error " + err);
           } else {
             console.log("Email sent successfully");
+            
+            let status = false
+            let link = ""
+            let docterId = docter._id
+            let userEmail = user.email
+            let docterEmail = docter.email
+
+            const newData = new meetingModal({ ...req.body, userId, docterId, userEmail,
+              docterEmail, status, link });
+            try {
+              const dataToSave = await newData.save();
+              res.status(200).json(dataToSave);  
+
+            } catch (error) {
+              res.status(400).json({ message: error.message });
+            }
+
           }
         }
       )
   })
-  
+
+
 });
 
 // finalized meeting route
@@ -95,9 +124,9 @@ meetingRouter.post("/meeting", async (req, res) => {
   link += zoomResponse.start_url;
 
   try {
-    const { isDocter, _id: userId } = verfiyTokenAndExtractInfo(req.headers["easydoc-session-config"], "*");
-    checkUser(isDocter, false);
-    const { docterId } = req.body;
+    const { isDocter, _id: docterId } = verfiyTokenAndExtractInfo(req.headers["easydoc-session-config"], "*");
+    checkUser(isDocter, true);
+    const { userId } = req.body;
 
     const data = await meetingModal.find({ docterId, userId })
     
